@@ -1,3 +1,5 @@
+import Foundation
+
 extension URLError {
     var isConnectionError: Bool {
         let codes = [
