@@ -14,19 +14,16 @@ public final class RemoteRestClient: RestClientType {
         guard let url = getURL(from: endpoint) else {
             throw NetworkingError.invalidURL
         }
-        var request = URLRequest(url: url)
-        request.httpMethod = endpoint.method.rawValue
-        for (key, value) in endpoint.headers {
-            request.addValue(value, forHTTPHeaderField: key)
-        }
         do {
+            let request = getRequest(from: endpoint, url: url)
             let (data, _) = try await session.data(for: request, delegate: nil)
             return try parse(data)
-        } catch {
-            guard (error as? URLError)?.isConnectionError == true else {
-                throw NetworkingError.generic
-            }
+        } catch is DecodingError {
+            throw NetworkingError.decoding
+        } catch let error as URLError where error.isConnectionError == true {
             throw NetworkingError.connection
+        } catch {
+            throw NetworkingError.generic
         }
     }
 
@@ -37,6 +34,18 @@ public final class RemoteRestClient: RestClientType {
         components.path = endpoint.path
         components.queryItems = endpoint.queryItems
         return components.url
+    }
+
+    private func getRequest(from endpoint: EndpointType, url: URL) -> URLRequest {
+        var request = URLRequest(url: url)
+        request.httpMethod = endpoint.method.rawValue
+        if let body = endpoint.body {
+            request.httpBody = try? JSONEncoder().encode(body)
+        }
+        for (key, value) in endpoint.headers {
+            request.addValue(value, forHTTPHeaderField: key)
+        }
+        return request
     }
 
     private func parse<T: Decodable>(_ data: Data) throws -> T {

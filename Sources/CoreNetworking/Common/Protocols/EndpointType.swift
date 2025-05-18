@@ -5,6 +5,7 @@ public protocol EndpointType {
     var method: HTTPMethod { get }
     var queryItems: [URLQueryItem] { get }
     var headers: [String: String] { get }
+    var body: Encodable? { get }
 }
 
 public extension EndpointType {
@@ -18,5 +19,9 @@ public extension EndpointType {
 
     var headers: [String: String] {
         [:]
+    }
+
+    var body: Encodable? {
+        nil
     }
 }

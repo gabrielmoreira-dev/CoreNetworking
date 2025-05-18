@@ -26,17 +26,19 @@ struct RemoteRestClientTests {
         let endpoint = EndpointDummy(path: "/path",
                                      method: .get,
                                      queryItems: [URLQueryItem(name: "test", value: String(true))],
-                                     headers: ["X-Test-Api": String(true)])
+                                     headers: ["X-Test-Api": String(true)],
+                                     body: String())
         sessionSpy.data = "[]".data(using: .utf8)
 
         let _: [String] = try await sut.fetch(endpoint)
 
         #expect(sessionSpy.request?.url?.absoluteString == "https://example.com/path?test=true")
         #expect(sessionSpy.request?.value(forHTTPHeaderField: "X-Test-Api") == String(true))
+        #expect(sessionSpy.request?.httpBody != nil)
     }
 
     @Test("Fetch data with HTTP method",
-          arguments: [HTTPMethod.get, .post, .put, .delete])
+          arguments: [HTTPMethod.get, .post, .put, .patch, .delete])
     mutating func fetchData(method: HTTPMethod) async throws {
         let endpoint = EndpointDummy(path: "/path", method: method)
         sessionSpy.data = "[]".data(using: .utf8)
@@ -69,39 +71,8 @@ struct RemoteRestClientTests {
         let endpoint = EndpointDummy(path: "/path")
         sessionSpy.data = Data()
 
-        await #expect(throws: NetworkingError.generic) {
+        await #expect(throws: NetworkingError.decoding) {
             let _: String = try await sut.fetch(endpoint)
         }
-    }
-}
-
-struct EndpointDummy: EndpointType {
-    let path: String
-    let method: HTTPMethod
-    let queryItems: [URLQueryItem]
-    let headers: [String: String]
-
-    init(path: String,
-         method: HTTPMethod = .get,
-         queryItems: [URLQueryItem] = [],
-         headers: [String : String] = [:]) {
-        self.path = path
-        self.method = method
-        self.queryItems = queryItems
-        self.headers = headers
-    }
-}
-
-final class URLSessionSpy: URLSessionType {
-    private(set) var request: URLRequest?
-    var data: Data?
-
-    @available(macOS 12.0, iOS 15.0, *)
-    func data(for request: URLRequest, delegate: (any URLSessionTaskDelegate)?) async throws -> (Data, URLResponse) {
-        self.request = request
-        guard let data else {
-            throw NetworkingError.generic
-        }
-        return (data, URLResponse())
     }
 }
