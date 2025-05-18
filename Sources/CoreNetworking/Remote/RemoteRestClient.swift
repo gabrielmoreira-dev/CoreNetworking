@@ -4,7 +4,7 @@ public final class RemoteRestClient: RestClientType {
     private let baseURL: String
     private let session: URLSessionType
 
-    init(baseURL: String, session: URLSessionType = URLSession.shared) {
+    public init(baseURL: String, session: URLSessionType = URLSession.shared) {
         self.baseURL = baseURL
         self.session = session
     }
