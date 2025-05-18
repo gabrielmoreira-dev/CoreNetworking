@@ -9,7 +9,7 @@ public final class RemoteRestClient: RestClientType {
         self.session = session
     }
 
-    @available(macOS 12.0, iOS 15.0, *)
+    @available(macOS 12.0, iOS 13.0, *)
     public func fetch<T: Decodable>(_ endpoint: EndpointType) async throws -> T {
         guard let url = getURL(from: endpoint) else {
             throw NetworkingError.invalidURL
