@@ -1,0 +1,8 @@
+default_platform(:mac)
+
+platform :mac do
+  desc "Execute unit tests"
+  lane :run_tests do
+    sh "swift test --enable-code-coverage"
+  end
+end

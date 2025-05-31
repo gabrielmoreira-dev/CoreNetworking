@@ -1,8 +1,22 @@
+#MacOS
 .DS_Store
+.netrc
+
+# XCode
 /.build
 /Packages
 xcuserdata/
 DerivedData/
+
+# SwiftPM
 .swiftpm/configuration/registries.json
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
-.netrc
+
+# Bundler
+.bundle/
+vendor/bundle
+
+# Fastlane
+.fastlane/
+fastlane/Appfile
+fastlane/report.xml
