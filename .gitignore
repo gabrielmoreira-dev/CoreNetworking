@@ -10,7 +10,7 @@ DerivedData/
 
 # SwiftPM
 .swiftpm/configuration/registries.json
-.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+.swiftpm/xcode
 
 # Bundler
 .bundle/

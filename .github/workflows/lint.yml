@@ -1,23 +1,22 @@
-name: Run unit tests
+name: SwiftLint
 
 on:
   pull_request:
-  push:
-    branches:
-      - main
-      - dev
+    paths:
+      - '**.swift'
+      - '.swiftlint.yml'
 
 jobs:
-  test:
+  lint:
     runs-on: macos-15
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Check Swift version
+      - name: Install SwiftLint
         run: |
-            swift --version
+          brew install swiftlint
 
       - name: Configure Ruby
         uses: ruby/setup-ruby@v1
@@ -29,6 +28,6 @@ jobs:
         run: |
           bundle install
 
-      - name: Execute tests
+      - name: Run SwiftLint
         run: |
-          bundle exec fastlane run_tests
+          bundle exec fastlane lint

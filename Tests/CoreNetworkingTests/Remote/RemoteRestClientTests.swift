@@ -14,7 +14,7 @@ struct RemoteRestClientTests {
     @Test("When fetch data, should return value")
     mutating func fetchData() async throws {
         let endpoint = EndpointDummy(path: "/path")
-        sessionSpy.data = "[]".data(using: .utf8)
+        sessionSpy.data = Data("[]".utf8)
 
         let result: [String] = try await sut.fetch(endpoint)
 
@@ -28,7 +28,7 @@ struct RemoteRestClientTests {
                                      queryItems: [URLQueryItem(name: "test", value: String(true))],
                                      headers: ["X-Test-Api": String(true)],
                                      body: String())
-        sessionSpy.data = "[]".data(using: .utf8)
+        sessionSpy.data = Data("[]".utf8)
 
         let _: [String] = try await sut.fetch(endpoint)
 
@@ -41,7 +41,7 @@ struct RemoteRestClientTests {
           arguments: [HTTPMethod.get, .post, .put, .patch, .delete])
     mutating func fetchData(method: HTTPMethod) async throws {
         let endpoint = EndpointDummy(path: "/path", method: method)
-        sessionSpy.data = "[]".data(using: .utf8)
+        sessionSpy.data = Data("[]".utf8)
 
         let _: [String] = try await sut.fetch(endpoint)
 

@@ -1,8 +1,18 @@
 default_platform(:mac)
 
 platform :mac do
-  desc "Execute unit tests"
+  desc "Run unit tests"
   lane :run_tests do
     sh "swift test --enable-code-coverage"
+  end
+end
+
+
+platform :mac do
+  desc "Run SwiftLint"
+  lane :lint do
+    Dir.chdir("..") do
+      sh "swiftlint"
+    end
   end
 end

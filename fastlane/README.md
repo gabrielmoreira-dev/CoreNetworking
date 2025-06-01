@@ -21,7 +21,15 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 [bundle exec] fastlane mac run_tests
 ```
 
-Execute unit tests
+Run unit tests
+
+### mac lint
+
+```sh
+[bundle exec] fastlane mac lint
+```
+
+Run SwiftLint
 
 ----
 

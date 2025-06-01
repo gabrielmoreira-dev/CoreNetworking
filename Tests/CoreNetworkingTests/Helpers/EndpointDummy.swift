@@ -11,7 +11,7 @@ struct EndpointDummy: EndpointType {
     init(path: String,
          method: HTTPMethod = .get,
          queryItems: [URLQueryItem] = [],
-         headers: [String : String] = [:],
+         headers: [String: String] = [:],
          body: Encodable? = nil) {
         self.path = path
         self.method = method
