@@ -20,3 +20,5 @@ vendor/bundle
 .fastlane/
 fastlane/Appfile
 fastlane/report.xml
+fastlane/.build/
+fastlane/coverage.lcov

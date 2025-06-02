@@ -32,3 +32,12 @@ jobs:
       - name: Execute tests
         run: |
           bundle exec fastlane run_tests
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage.lcov
+          flags: unittests
+          name: codecov-report
+          fail_ci_if_error: true

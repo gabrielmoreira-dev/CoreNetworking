@@ -3,16 +3,9 @@ default_platform(:mac)
 platform :mac do
   desc "Run unit tests"
   lane :run_tests do
-    sh "swift test --enable-code-coverage"
-  end
-end
-
-
-platform :mac do
-  desc "Run SwiftLint"
-  lane :lint do
-    Dir.chdir("..") do
-      sh "swiftlint"
-    end
+    sh "swift test --enable-code-coverage --build-path .build"
+    sh "xcrun llvm-cov export -format=lcov \
+    .build/debug/CoreNetworkingPackageTests.xctest/Contents/MacOS/CoreNetworkingPackageTests \
+    -instr-profile .build/debug/codecov/default.profdata > coverage.lcov"
   end
 end
