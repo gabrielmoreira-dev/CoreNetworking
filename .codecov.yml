@@ -1,0 +1,21 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 80%         
+        threshold: 1%
+        branches:
+          - main
+          - dev
+        informational: false
+    patch:
+      default:
+        target: 80%
+        threshold: 1%
+        branches:
+          - main
+          - dev
+        informational: false
+
+  ignore:
+    - Tests
