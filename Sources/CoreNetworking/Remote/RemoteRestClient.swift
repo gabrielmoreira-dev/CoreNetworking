@@ -3,10 +3,16 @@ import Foundation
 public final class RemoteRestClient: RestClientType {
     private let baseURL: String
     private let session: URLSessionType
+    private let decodingStrategy: JSONDecoder.KeyDecodingStrategy
 
-    public init(baseURL: String, session: URLSessionType = URLSession.shared) {
+    public init(
+        baseURL: String,
+        session: URLSessionType = URLSession.shared,
+        decodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys
+    ) {
         self.baseURL = baseURL
         self.session = session
+        self.decodingStrategy = decodingStrategy
     }
 
     @available(macOS 12.0, iOS 15.0, *)
@@ -50,7 +56,7 @@ public final class RemoteRestClient: RestClientType {
 
     private func parse<T: Decodable>(_ data: Data) throws -> T {
         let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        decoder.keyDecodingStrategy = decodingStrategy
         return try decoder.decode(T.self, from: data)
     }
 }
