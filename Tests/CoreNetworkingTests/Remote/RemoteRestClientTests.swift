@@ -11,7 +11,7 @@ struct RemoteRestClientTests {
         RemoteRestClient(baseURL: "example.com", session: sessionSpy)
     }()
 
-    @Test("When fetch data, should return value")
+    @Test("Fetch data")
     mutating func fetchData() async throws {
         let endpoint = EndpointDummy(path: "/path")
         sessionSpy.data = Data("[]".utf8)
@@ -21,7 +21,7 @@ struct RemoteRestClientTests {
         #expect(result == [])
     }
 
-    @Test("When fetch data, should pass correct parameters")
+    @Test("Fetch data with parameters")
     mutating func fetchDataWithParameters() async throws {
         let endpoint = EndpointDummy(path: "/path",
                                      method: .get,
@@ -35,6 +35,21 @@ struct RemoteRestClientTests {
         #expect(sessionSpy.request?.url?.absoluteString == "https://example.com/path?test=true")
         #expect(sessionSpy.request?.value(forHTTPHeaderField: "X-Test-Api") == String(true))
         #expect(sessionSpy.request?.httpBody != nil)
+    }
+
+    @Test("Fetch data with default parameters")
+    mutating func fetchDataWithDefaultParameters() async throws {
+        struct DefaultEndpoint: EndpointType {
+            let path: String
+        }
+        let endpoint = DefaultEndpoint(path: "/path")
+        sessionSpy.data = Data("[]".utf8)
+
+        let _: [String] = try await sut.fetch(endpoint)
+
+        #expect(sessionSpy.request?.httpMethod == HTTPMethod.get.rawValue)
+        #expect(sessionSpy.request?.url?.absoluteString == "https://example.com/path?")
+        #expect(sessionSpy.request?.httpBody == nil)
     }
 
     @Test("Fetch data with HTTP method",
