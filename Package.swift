@@ -11,14 +11,25 @@ let package = Package(
     products: [
         .library(
             name: "CoreNetworking",
-            targets: ["CoreNetworking"]),
+            targets: ["CoreNetworking"]
+        ),
+        .library(
+            name: "CoreNetworkingTestUtils",
+            targets: ["CoreNetworkingTestUtils"]
+        )
     ],
     targets: [
         .target(
-            name: "CoreNetworking"),
+            name: "CoreNetworking"
+        ),
+        .target(
+            name: "CoreNetworkingTestUtils",
+            dependencies: ["CoreNetworking"],
+            path: "Sources/TestUtils"
+        ),
         .testTarget(
             name: "CoreNetworkingTests",
-            dependencies: ["CoreNetworking"]
+            dependencies: ["CoreNetworking", "CoreNetworkingTestUtils"]
         ),
     ]
 )

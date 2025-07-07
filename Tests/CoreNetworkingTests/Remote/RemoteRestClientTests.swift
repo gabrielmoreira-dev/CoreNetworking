@@ -3,16 +3,11 @@ import Testing
 @testable import CoreNetworking
 
 struct RemoteRestClientTests {
-    private lazy var sessionSpy: URLSessionSpy = {
-        URLSessionSpy()
-    }()
-
-    private lazy var sut: RemoteRestClient = {
-        RemoteRestClient(session: sessionSpy)
-    }()
+    private let sessionSpy = URLSessionSpy()
 
     @Test("Fetch data")
-    mutating func fetchData() async throws {
+    func fetchData() async throws {
+        let sut = RemoteRestClient(session: sessionSpy)
         let endpoint = EndpointDummy()
         sessionSpy.data = Data("[]".utf8)
 
@@ -22,7 +17,8 @@ struct RemoteRestClientTests {
     }
 
     @Test("Fetch data with parameters")
-    mutating func fetchDataWithParameters() async throws {
+    func fetchDataWithParameters() async throws {
+        let sut = RemoteRestClient(session: sessionSpy)
         let endpoint = EndpointDummy(
             baseURL: "example.com",
             path: "/path",
@@ -42,11 +38,12 @@ struct RemoteRestClientTests {
     }
 
     @Test("Fetch data with default parameters")
-    mutating func fetchDataWithDefaultParameters() async throws {
+    func fetchDataWithDefaultParameters() async throws {
         struct DefaultEndpoint: EndpointType {
             var baseURL: String { "example.com" }
             var path: String { "/path" }
         }
+        let sut = RemoteRestClient(session: sessionSpy)
         let endpoint = DefaultEndpoint()
         sessionSpy.data = Data("[]".utf8)
 
@@ -59,7 +56,8 @@ struct RemoteRestClientTests {
 
     @Test("Fetch data with HTTP method",
           arguments: [HTTPMethod.get, .post, .put, .patch, .delete])
-    mutating func fetchData(method: HTTPMethod) async throws {
+    func fetchData(method: HTTPMethod) async throws {
+        let sut = RemoteRestClient(session: sessionSpy)
         let endpoint = EndpointDummy(method: method)
         sessionSpy.data = Data("[]".utf8)
 
@@ -69,10 +67,11 @@ struct RemoteRestClientTests {
     }
 
     @Test("Fetch data using snake case decoding strategy")
-    mutating func fetchDataWithDecodingStrategy() async throws {
+    func fetchDataWithDecodingStrategy() async throws {
         struct Response: Decodable {
             let textValue: String
         }
+        let sut = RemoteRestClient(session: sessionSpy)
         let endpoint = EndpointDummy()
         let expectedValue = "Value"
         sessionSpy.data = Data("{\"text_value\": \"\(expectedValue)\"}".utf8)
@@ -83,7 +82,8 @@ struct RemoteRestClientTests {
     }
 
     @Test("Fetch data with invalid URL")
-    mutating func fetchWithInvalidURL() async throws {
+    func fetchWithInvalidURL() async throws {
+        let sut = RemoteRestClient(session: sessionSpy)
         let endpoint = EndpointDummy(path: "Invalid path")
 
         await #expect(throws: NetworkingError.invalidURL) {
@@ -92,7 +92,8 @@ struct RemoteRestClientTests {
     }
 
     @Test("Generic server error")
-    mutating func fetchWithGenericError() async throws {
+    func fetchWithGenericError() async throws {
+        let sut = RemoteRestClient(session: sessionSpy)
         let endpoint = EndpointDummy()
 
         await #expect(throws: NetworkingError.generic) {
@@ -101,7 +102,8 @@ struct RemoteRestClientTests {
     }
 
     @Test("Internet error")
-    mutating func fetchWithInternetError() async throws {
+    func fetchWithInternetError() async throws {
+        let sut = RemoteRestClient(session: sessionSpy)
         let endpoint = EndpointDummy()
         sessionSpy.error = URLError(.networkConnectionLost)
 
@@ -111,7 +113,8 @@ struct RemoteRestClientTests {
     }
 
     @Test("Fetch invalid data")
-    mutating func fetchInvalidData() async throws {
+    func fetchInvalidData() async throws {
+        let sut = RemoteRestClient(session: sessionSpy)
         let endpoint = EndpointDummy()
         sessionSpy.data = Data()
 

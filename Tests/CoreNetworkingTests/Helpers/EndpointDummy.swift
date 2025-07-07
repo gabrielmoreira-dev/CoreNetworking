@@ -1,7 +1,7 @@
 import Foundation
 @testable import CoreNetworking
 
-struct EndpointDummy: EndpointType {
+struct EndpointDummy: EndpointType, Equatable {
     let baseURL: String
     let path: String
     let method: HTTPMethod
@@ -21,5 +21,13 @@ struct EndpointDummy: EndpointType {
         self.queryItems = queryItems
         self.headers = headers
         self.body = body
+    }
+
+    static func == (lhs: EndpointDummy, rhs: EndpointDummy) -> Bool {
+        lhs.baseURL == rhs.baseURL &&
+        lhs.path == rhs.path &&
+        lhs.headers == rhs.headers &&
+        lhs.method == rhs.method &&
+        lhs.queryItems == rhs.queryItems
     }
 }
