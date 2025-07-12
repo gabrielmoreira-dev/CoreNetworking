@@ -1,23 +1,24 @@
 import Foundation
 
-public final class RemoteRestClient: RestClientType {
-    private let baseURL: String
+public final class RestClient: RestClientType {
     private let session: URLSessionType
 
-    public init(baseURL: String, session: URLSessionType = URLSession.shared) {
-        self.baseURL = baseURL
+    public init(session: URLSessionType = URLSession.shared) {
         self.session = session
     }
 
     @available(macOS 12.0, iOS 15.0, *)
-    public func fetch<T: Decodable>(_ endpoint: EndpointType) async throws -> T {
+    public func fetch<T: Decodable>(
+        _ endpoint: EndpointType,
+        decodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys
+    ) async throws -> T {
         guard let url = getURL(from: endpoint) else {
             throw NetworkingError.invalidURL
         }
         do {
             let request = getRequest(from: endpoint, url: url)
             let (data, _) = try await session.data(for: request, delegate: nil)
-            return try parse(data)
+            return try parse(data, decodingStrategy: decodingStrategy)
         } catch is DecodingError {
             throw NetworkingError.decoding
         } catch let error as URLError where error.isConnectionError == true {
@@ -30,7 +31,7 @@ public final class RemoteRestClient: RestClientType {
     private func getURL(from endpoint: EndpointType) -> URL? {
         var components = URLComponents()
         components.scheme = "https"
-        components.host = baseURL
+        components.host = endpoint.baseURL
         components.path = endpoint.path
         components.queryItems = endpoint.queryItems
         return components.url
@@ -48,9 +49,9 @@ public final class RemoteRestClient: RestClientType {
         return request
     }
 
-    private func parse<T: Decodable>(_ data: Data) throws -> T {
+    private func parse<T: Decodable>(_ data: Data, decodingStrategy: JSONDecoder.KeyDecodingStrategy) throws -> T {
         let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        decoder.keyDecodingStrategy = decodingStrategy
         return try decoder.decode(T.self, from: data)
     }
 }

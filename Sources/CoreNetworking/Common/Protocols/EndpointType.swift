@@ -1,6 +1,7 @@
 import Foundation
 
 public protocol EndpointType {
+    var baseURL: String { get }
     var path: String { get }
     var method: HTTPMethod { get }
     var queryItems: [URLQueryItem] { get }
@@ -9,19 +10,11 @@ public protocol EndpointType {
 }
 
 public extension EndpointType {
-    var method: HTTPMethod {
-        .get
-    }
+    var method: HTTPMethod { .get }
 
-    var queryItems: [URLQueryItem] {
-        []
-    }
+    var queryItems: [URLQueryItem] { [] }
 
-    var headers: [String: String] {
-        [:]
-    }
+    var headers: [String: String] { [:] }
 
-    var body: Encodable? {
-        nil
-    }
+    var body: Encodable? { nil }
 }

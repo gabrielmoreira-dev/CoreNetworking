@@ -1,0 +1,16 @@
+disabled_rules:
+
+opt_in_rules:
+  - force_unwrapping
+  - unused_optional_binding
+
+included:
+  - Sources
+  - Tests
+
+excluded:
+  - .build
+  - fastlane
+  - vendor
+
+reporter: xcode
