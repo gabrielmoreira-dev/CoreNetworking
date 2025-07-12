@@ -2,12 +2,12 @@ import Foundation
 import Testing
 @testable import CoreNetworking
 
-struct RemoteRestClientTests {
+struct RestClientTests {
     private let sessionSpy = URLSessionSpy()
 
     @Test("Fetch data")
     func fetchData() async throws {
-        let sut = RemoteRestClient(session: sessionSpy)
+        let sut = RestClient(session: sessionSpy)
         let endpoint = EndpointDummy()
         sessionSpy.data = Data("[]".utf8)
 
@@ -18,7 +18,7 @@ struct RemoteRestClientTests {
 
     @Test("Fetch data with parameters")
     func fetchDataWithParameters() async throws {
-        let sut = RemoteRestClient(session: sessionSpy)
+        let sut = RestClient(session: sessionSpy)
         let endpoint = EndpointDummy(
             baseURL: "example.com",
             path: "/path",
@@ -43,7 +43,7 @@ struct RemoteRestClientTests {
             var baseURL: String { "example.com" }
             var path: String { "/path" }
         }
-        let sut = RemoteRestClient(session: sessionSpy)
+        let sut = RestClient(session: sessionSpy)
         let endpoint = DefaultEndpoint()
         sessionSpy.data = Data("[]".utf8)
 
@@ -57,7 +57,7 @@ struct RemoteRestClientTests {
     @Test("Fetch data with HTTP method",
           arguments: [HTTPMethod.get, .post, .put, .patch, .delete])
     func fetchData(method: HTTPMethod) async throws {
-        let sut = RemoteRestClient(session: sessionSpy)
+        let sut = RestClient(session: sessionSpy)
         let endpoint = EndpointDummy(method: method)
         sessionSpy.data = Data("[]".utf8)
 
@@ -71,7 +71,7 @@ struct RemoteRestClientTests {
         struct Response: Decodable {
             let textValue: String
         }
-        let sut = RemoteRestClient(session: sessionSpy)
+        let sut = RestClient(session: sessionSpy)
         let endpoint = EndpointDummy()
         let expectedValue = "Value"
         sessionSpy.data = Data("{\"text_value\": \"\(expectedValue)\"}".utf8)
@@ -83,7 +83,7 @@ struct RemoteRestClientTests {
 
     @Test("Fetch data with invalid URL")
     func fetchWithInvalidURL() async throws {
-        let sut = RemoteRestClient(session: sessionSpy)
+        let sut = RestClient(session: sessionSpy)
         let endpoint = EndpointDummy(path: "Invalid path")
 
         await #expect(throws: NetworkingError.invalidURL) {
@@ -93,7 +93,7 @@ struct RemoteRestClientTests {
 
     @Test("Generic server error")
     func fetchWithGenericError() async throws {
-        let sut = RemoteRestClient(session: sessionSpy)
+        let sut = RestClient(session: sessionSpy)
         let endpoint = EndpointDummy()
 
         await #expect(throws: NetworkingError.generic) {
@@ -103,7 +103,7 @@ struct RemoteRestClientTests {
 
     @Test("Internet error")
     func fetchWithInternetError() async throws {
-        let sut = RemoteRestClient(session: sessionSpy)
+        let sut = RestClient(session: sessionSpy)
         let endpoint = EndpointDummy()
         sessionSpy.error = URLError(.networkConnectionLost)
 
@@ -114,7 +114,7 @@ struct RemoteRestClientTests {
 
     @Test("Fetch invalid data")
     func fetchInvalidData() async throws {
-        let sut = RemoteRestClient(session: sessionSpy)
+        let sut = RestClient(session: sessionSpy)
         let endpoint = EndpointDummy()
         sessionSpy.data = Data()
 
