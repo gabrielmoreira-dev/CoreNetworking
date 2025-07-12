@@ -1,6 +1,6 @@
 import Foundation
 
-public final class RemoteRestClient: RestClientType {
+public final class RestClient: RestClientType {
     private let session: URLSessionType
 
     public init(session: URLSessionType = URLSession.shared) {
